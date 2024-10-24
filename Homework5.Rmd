@@ -1,0 +1,67 @@
+---
+title: "Homework 4"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+---
+
+```{r global_options, include = FALSE} 
+
+knitr::opts_chunk$set(echo = TRUE,
+                      eval = TRUE, 
+                      warning = FALSE, 
+                      message = FALSE
+                      )
+library(ggplot2)
+library(tidyverse)
+library(lubridate)
+library(knitr)
+
+```
+
+## Question 1 
+
+```{r}
+wnba_all_data <- read.csv("WNBA - Sheet1.csv")
+
+wnba <- wnba_all_data |>
+  select(Player, MP, X3P.) |>
+  rename( minutes_played = MP, three_point_percentage = X3P.)
+nrow(wnba)
+
+```
+There are 183 players on the roster for 2024
+
+## Question 2 
+
+```{r}
+wnba |>
+  ggplot(aes(x=three_point_percentage)) + geom_histogram(binwidth = 0.02, fill = "orange", color = "black")
+summary(wnba$three_point_percentage)
+```
+
+
+## Question 3 
+Create a graph that shows the relationship between the minutes played by each player and their three-point shooting percentage. Choose one particular player, highlight her point on the graph and label it with her name.
+
+```{r}
+player <- "Caitlin Clark" 
+wnba |> 
+  ggplot(aes(x = minutes_played, y = three_point_percentage)) +
+  geom_point(color = "brown") +  # All points are brown by default
+  geom_point(
+    data = wnba[wnba$Player == player, ],  # Highlight Caitlin Clark's point
+    aes(x = minutes_played, y = three_point_percentage),
+    color = "blue", size = 3  # Blue point for Caitlin Clark
+  ) +  
+  geom_text(
+    data = wnba[wnba$Player == player, ],  # Add label for Caitlin Clark
+    aes(x = minutes_played, y = three_point_percentage, label = Player), 
+    vjust = -1, color = "blue"  # Position label slightly above the point
+  )
+  
+    
+```
+
